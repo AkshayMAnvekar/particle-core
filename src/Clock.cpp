@@ -52,6 +52,32 @@ void playBuzzer()
   buzzerActive = true;
 }
 
+void playMelody()
+{
+  // "I  -  LOVE  -  YOU"  (original motif)
+  //  G5    E5 G5 C6     G5  E5 C5
+  int notes[]     = { 784, 0,  659, 784, 1047, 0,  784, 659, 523 };
+  int durations[] = { 500, 80, 180, 180, 400,  80, 200, 200, 500 };
+  int count = sizeof(notes) / sizeof(notes[0]);
+
+  for (int i = 0; i < count; i++)
+  {
+    if (notes[i] > 0)
+      tone(BUZZER_PIN, notes[i], durations[i]);
+    delay(durations[i] + 40);
+  }
+  noTone(BUZZER_PIN);
+}
+
+int triggerBuzzer(String arg)
+{
+  if (arg == "melody")
+    playMelody();
+  else
+    playBuzzer();
+  return 1;
+}
+
 // Create a new MD_Parola object (software SPI)
 MD_Parola P = MD_Parola(HARDWARE_TYPE, DATA_PIN, CLK_PIN, CS_PIN, MAX_DEVICES);
 
@@ -64,6 +90,7 @@ void setup()
   Particle.variable("displayText", displayText);
   Particle.function("setText", setDisplayText);
   Particle.function("setAlarm", setAlarm);
+  Particle.function("triggerBuzzer", triggerBuzzer);
 }
 
 void loop()
